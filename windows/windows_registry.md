@@ -2,7 +2,7 @@
 
 ## Absolute path for `reg`
 
-```shell
+```shell script
 C:\Windows\System32\reg.exe
 ```
 
@@ -10,17 +10,17 @@ C:\Windows\System32\reg.exe
 
 ### Read an entire folder
 
-```shell
+```shell script
 reg query HKEY_CURRENT_USER\Environment
 ```
 
 ### (Over)write the `test_1` value under the `Test1` key
-```shell
+```shell script
 reg add HKEY_CURRENT_USER\Environment /v Test1 /t REG_EXPAND_SZ /d test_1 /f
 ```
 
 ### Delete the `Test1` key
 
-```shell
+```shell script
 reg delete HKEY_CURRENT_USER\Environment /v Test1 /f
 ```

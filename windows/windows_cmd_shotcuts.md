@@ -2,7 +2,7 @@
 
 ## Absolute path for `cmd`
 
-```shell
+```shell script
 C:\Windows\System32\cmd.exe
 ```
 
@@ -21,6 +21,10 @@ Open CMD window and press `Ctrl + Shift + Enter`
 ## Process Manager
 
 `taskmgr`
+
+## Performance monitor with tabbed view 
+
+`perfmon /res`
 
 ## Task Scheduler
 
