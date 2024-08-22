@@ -10,34 +10,102 @@ C:\Windows\System32\cmd.exe
 
 Open CMD window and press `Ctrl + Shift + Enter`
 
-## Device Manager
-
-`devmgmt.msc`
-
-## Computer Manager
-
-`compmgmt.msc`
-
 ## Process Manager
 
 `taskmgr`
 
-## Performance monitor with tabbed view 
+## Performance monitor with tabular view 
 
 `perfmon /res`
 
-## Task Scheduler
+## Updater
+
+`wuauclt /updatenow`
+
+## System Configurator
+
+`msconfig`
+
+## File Explorer
+
+`explorer`
+
+## Calculator
+
+`calc`
+
+## Control Panel tools
+
+### Absolute path for `control`
+
+```shell script
+C:\Windows\System32\control.exe
+```
+
+### Disk Manager
+
+`diskmgmt.msc`
+
+### Service Manager
+
+`services.msc`
+
+### Device Manager
+
+`devmgmt.msc`
+
+### Computer Manager
+
+`compmgmt.msc`
+
+### Local Users and Groups
+
+`lusrmgr.msc`
+
+### Group Policy 
+
+`gpedit.msc`
+
+### Local security settings
+
+`secpol.msc`
+
+### Task Scheduler
 
 `taskschd.msc`
 
-## Windows updater
+### Shared Folders
 
-`wuauclt.exe /updatenow`
+`fsmgmt.msc`
 
-## Network credentials editor
+## `Rundll32` commands
 
-`rundll32.exe keymgr.dll, KRShowKeyMgr`
+### Absolute path for `rundll32`
 
-## User environment variables editor
+```shell script
+C:\Windows\System32\rundll32.exe
+```
+
+### Power Options
+
+`rundll32 Shell32.dll,Control_RunDLL powercfg.cpl`
+
+### Program Manager
+
+`runDll32 shell32.dll,Control_RunDLL appwiz.cpl,,0`
+
+### Network Connections
+
+`rundll32 shell32.dll,Control_RunDLL ncpa.cpl`
+
+### Network credentials editor
+
+`rundll32 keymgr.dll, KRShowKeyMgr`
+
+### User environment variables editor
 
 `rundll32 sysdm.cpl,EditEnvironmentVariables`
+
+### User Manager
+
+`rundll32 shell32.dll,Control_RunDLL nusrmgr.cpl`
