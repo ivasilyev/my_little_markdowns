@@ -1,4 +1,4 @@
-# Reference for Windows GUI tools access using Windows CLI commands
+# Reference for Windows CLI commands to open Windows GUI tools
 
 ## Absolute path for `cmd`
 
