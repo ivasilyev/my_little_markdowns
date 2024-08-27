@@ -63,23 +63,21 @@ yet more fast and works for almost all cases of importing Linux VMs.
 ### Create VMDK file
 
 ```shell script
+echo "Convert RAW to VMDK"
 "${PROGRAMFILES}/Oracle/VirtualBox/VBoxManage.exe" \
     convertfromraw \
     "disk.img" \
     "disk.vmdk" \
     --format vmdk
+mkdir \
+    --parent \
+    --verbose \
+    "split"
+echo "Convert 'monolithic sparse' VMDK into 'split sparse' VMDK"
 "${PROGRAMFILES} (x86)/VMware/VMware Workstation/vmware-vdiskmanager.exe" \
     -r "disk.vmdk" \
-    -t 0 \
-    "disk_fix.vmdk"
-mv \
-    --verbose \
-    "disk.vmdk" \
-    "disk_old.vmdk"
-mv \
-    --verbose \
-    "disk_fix.vmdk" \
-    "disk.vmdk"
+    -t 1 \
+    "split/disk.vmdk"
 ```
 
 ### Create VMware VM
