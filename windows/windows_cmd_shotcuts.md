@@ -78,6 +78,10 @@ C:\Windows\System32\control.exe
 
 `fsmgmt.msc`
 
+### Windows event viewer
+
+`eventvwr.msc`
+
 ## `Rundll32` commands
 
 ### Absolute path for `rundll32`
