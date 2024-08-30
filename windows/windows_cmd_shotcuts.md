@@ -113,3 +113,9 @@ C:\Windows\System32\rundll32.exe
 ### User Manager
 
 `rundll32 shell32.dll,Control_RunDLL nusrmgr.cpl`
+
+## Windows 10+ URIs
+
+### Call Windows Defender GUI
+
+`start windowsdefender:`
