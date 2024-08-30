@@ -30,3 +30,10 @@ New-Item -ItemType SymbolicLink -Path "%USERPROFILE%\Desktop" -Name "Calculator.
 ```shell script
 (New-Object -ComObject shell.application).toggleDesktop()
 ```
+
+## Add Windows Defender exclusion
+
+```shell script
+Add-MpPreference -ExclusionPath "C:\program_dir\program.exe"
+Add-MpPreference -ExclusionPath "C:\program_dir"
+```
