@@ -37,3 +37,9 @@ New-Item -ItemType SymbolicLink -Path "%USERPROFILE%\Desktop" -Name "Calculator.
 Add-MpPreference -ExclusionPath "C:\program_dir\program.exe"
 Add-MpPreference -ExclusionPath "C:\program_dir"
 ```
+
+## Import task XML into the Windows Scheduler
+
+```shell script
+$TaskName = '<task_name>'; $TaskXml = [xml](Get-Content '<task_file.xml>'); Register-ScheduledTask -TaskName $TaskName -Xml $TaskXml.OuterXml; Get-ScheduledTask -TaskName $TaskName
+```
