@@ -1,5 +1,7 @@
 # Short reference about conversion into VMware VM from a virtual or physical  machine 
 
+Use Cygwin or Git Bash.
+
 ## From an entire disk containing physical machine
 
 ### Create raw disk image
