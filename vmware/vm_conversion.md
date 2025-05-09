@@ -82,6 +82,14 @@ echo "Convert 'monolithic sparse' VMDK into 'split sparse' VMDK"
     "split/disk.vmdk"
 ```
 
+### Rename VM disk
+
+```shell script
+"${PROGRAMFILES} (x86)/VMware/VMware Workstation/vmware-vdiskmanager.exe" \
+    -n "old.vmdk" \
+    "new.vmdk"
+```
+
 ### Create VMware VM
 
 - Invoke VMware VM creation wizard
