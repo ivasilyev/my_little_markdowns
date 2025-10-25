@@ -42,6 +42,11 @@ sudo apt-get install \
     winbind \
     wsdd \
     xrdp
+
+sudo systemctl enable xrdp
+sudo systemctl restart xrdp
+sudo systemctl set-default multi-user.target
+sudo reboot
 ```
 
 # Install AnyDesk
