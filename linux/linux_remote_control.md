@@ -25,6 +25,8 @@ ssh-keygen \
 chmod -v 600 ~/.ssh/authorized_keys && \
 chmod -v 700 ~/.ssh
 
+# Add remote hosts connection
+# nano ~/.ssh_config
 # Edit remote keys to be accepted if required
 # nano ~/.ssh/authorized_keys
 # chmod -v 600 ~/.ssh/authorized_keys
