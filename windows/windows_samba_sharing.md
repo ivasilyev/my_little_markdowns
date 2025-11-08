@@ -25,7 +25,7 @@ Restart-Computer
 
 # Modify File Explorer settings
 
-```powershell
+```shell script
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLinkedConnections /t REG_DWORD /d 1 /f
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v AllowInsecureGuestAuth /t REG_DWORD /d 1 /f
 net stop LanmanWorkstation /y
@@ -36,7 +36,7 @@ net use * \\host\Share
 
 # Clear cached passwords
 
-```
+```shell script
 net use * /d
 klist purge
 reg delete HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Shares /f
