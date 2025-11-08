@@ -46,9 +46,8 @@ sudo mkdir -pv "${LOCAL_DIR}"
 sudo chmod -Rv 777 "${LOCAL_DIR}"
 
 echo Set Samba client mount point as persistent
-printf "\n#${REMOTE_HOST}\n//${FULL_REMOTE_DIR} ${LOCAL_DIR} cifs rw,_netdev,credentials=${LOCAL_CFG},iocharset=utf8,uid=$(id -u),gid=$(id -g) 0 0\n" | sudo tee -a "/etc/fstab"
+printf "\n# ${REMOTE_HOST}\n//${FULL_REMOTE_DIR} ${LOCAL_DIR} cifs rw,_netdev,credentials=${LOCAL_CFG},iocharset=utf8,uid=$(id -u),gid=$(id -g) 0 0\n" | sudo tee -a "/etc/fstab"
 # sudo nano "/etc/fstab"
-clear
 
 # Reboot
 sudo shutdown -r now

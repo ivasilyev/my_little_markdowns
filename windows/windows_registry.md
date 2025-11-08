@@ -25,3 +25,11 @@ reg add HKEY_CURRENT_USER\Environment /v Test1 /t REG_EXPAND_SZ /d test_1 /f
 ```shell script
 reg delete HKEY_CURRENT_USER\Environment /v Test1 /f
 ```
+
+## Examples
+
+### Find an old computer hostname
+
+```shell script
+reg query HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\SchedulingAgent /v OldName
+```
