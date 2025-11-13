@@ -4,6 +4,9 @@
 
 ```shell script
 export KUBESPRAY_DIRECTORY="${HOME}/kubespray/"
+echo "export KUBESPRAY_DIRECTORY=\"${KUBESPRAY_DIRECTORY}\"" \
+| tee -a "${HOME}/.bashrc"
+
 
 cd "${HOME}"
 rm -rf kubespray
@@ -126,7 +129,7 @@ sudo swapoff -a
 ```shell script
 export ANSIBLE_HOST_KEY_CHECKING=False
 
-cd "${HOME}/kubespray"
+cd "${KUBESPRAY_DIRECTORY}"
 ansible-playbook \
     --ask-vault-pass \
     --extra-vars "@${ANSIBLE_VAULT_FILE}" \
@@ -140,8 +143,8 @@ ansible-playbook \
     "${KUBESPRAY_DIRECTORY}reset.yml" \
 |& tee "${KUBESPRAY_DIRECTORY}reset_cluster.log"
 
-# or:
-cd "${HOME}/kubespray"
+# or without Ansible Vault:
+cd "${KUBESPRAY_DIRECTORY}"
 ansible-playbook \
     --ask-pass \
     --ask-become-pass \
@@ -184,7 +187,8 @@ ansible-playbook \
 ### Get rid of the error x509
 
 ```shell script
-sudo echo
+# Run by a regular user
+
 sudo swapoff -a
 
 cd
@@ -196,7 +200,7 @@ echo "export KUBECONFIG=\"${KUBECONFIG}\"" \
 sudo rm -rf "$(dirname "${KUBECONFIG}")"
 mkdir -p "$(dirname "${KUBECONFIG}")"
 
-sudo cp -r /etc/kubernetes/admin.conf "${KUBECONFIG}"
+sudo cp -rv /etc/kubernetes/admin.conf "${KUBECONFIG}"
 sudo chown "$(id -u):$(id -g)" "${KUBECONFIG}"
 
 sudo groupadd docker;
@@ -382,4 +386,10 @@ sudo kubectl proxy --address 0.0.0.0 --accept-hosts '.*'
 # However, login attempt may be perforned from the host domain only, see:
 
 # https://github.com/kubernetes/dashboard/issues/2540
+```
+
+# Taint master node to run containers
+
+```shell script
+kubectl taint node mymasternode node-role.kubernetes.io/control-plane:NoSchedule-
 ```
