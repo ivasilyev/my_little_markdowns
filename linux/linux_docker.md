@@ -2,32 +2,23 @@
 
 ```shell script
 echo Set up the repository && \
-sudo apt-get update -y && \
-sudo apt-get install \
-    --yes \
-    ca-certificates\
-    curl \
-    gnupg && \
-echo Add Docker’s official GPG key && \
+sudo apt-get update  && \
+sudo apt-get install ca-certificates curl && \
 sudo install -m 0755 -d /etc/apt/keyrings && \
-curl \
-    -fsSL https://download.docker.com/linux/ubuntu/gpg \
-| sudo gpg \
-    --dearmor \
-    -o /etc/apt/keyrings/docker.gpg && \
-sudo chmod a+r /etc/apt/keyrings/docker.gpg && \
-echo Add the repository to APT sources && \
-echo "
-    deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-    $(. /etc/os-release && \
-        echo "$(
-            lsb_release \
-                --codename \
-                --short
-        )"
-    ) stable
-" \
-| sudo tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+sudo curl -fsSL \
+  'https://download.docker.com/linux/ubuntu/gpg' \
+  -o '/etc/apt/keyrings/docker.asc' && \
+sudo chmod a+r '/etc/apt/keyrings/docker.asc' && \
+echo Add the repository to sources && \
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+sudo apt-get update && \
 sudo systemctl daemon-reload && \
 sudo apt-get update -y && \
 echo Install the Docker engine && \
@@ -43,12 +34,11 @@ sudo apt-get install \
 # Run undo ordinary user (use `logout` if required)
 
 ```shell script
-# sudo usermod -aG docker "$(whoami)"
-
 sudo groupadd -f docker && \
-sudo usermod -aG docker user && \
+sudo usermod -aG docker "$(whoami)" && \
 sudo newgrp docker && \
 sudo shutdown -r now
+exit
 ```
 
 # Test Docker
@@ -84,10 +74,10 @@ sudo crontab -l
 docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 
-docker container prune
-docker image prune
-docker volume prune
-docker network prune
+docker container prune --force
+docker image prune --force
+docker volume prune --force
+docker network prune --force
 docker system prune --all --volumes --force
 
 # Remove
@@ -105,6 +95,12 @@ sudo apt-get remove \
     docker-compose-plugin \
     podman-docker \
     runc
+
+# Or
+sudo apt remove $(
+  dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc \
+  | cut -f1
+)
 
 sudo rm -rf /var/lib/docker
 ```
