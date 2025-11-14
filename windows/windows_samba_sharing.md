@@ -41,3 +41,11 @@ net use * /d
 klist purge
 reg delete HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Shares /f
 ```
+
+# Grant full permissions
+
+```shell script
+icacls The_folder /grant "Everyone:(OI)(CI)F"
+REM OR
+icacls ubuntu-epimetheus /grant "HOSTNAME\username:(OI)(CI)F" /T
+```
