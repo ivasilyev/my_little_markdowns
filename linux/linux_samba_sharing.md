@@ -4,14 +4,10 @@
 
 ```shell script
 # Run under regular user
-echo Install software
-sudo apt-get update -y && sudo apt-get install -y cifs-utils smbclient
-
-unset HISTFILE
 echo Export variables
 #
-export REMOTE_UN=""
-export REMOTE_PASSWD=""
+export REMOTE_USER_NAME=""
+export REMOTE_PASSWORD=""
 export REMOTE_HOST=""
 export LOCAL_DIR=""
 export REMOTE_DIR=""
@@ -19,6 +15,10 @@ export REMOTE_DIR=""
 export FULL_REMOTE_DIR="${REMOTE_HOST}/${REMOTE_DIR}"
 export LOCAL_CFG="/etc/samba/${REMOTE_HOST}.smbclient"
 clear
+unset HISTFILE
+
+echo Install software
+sudo apt-get update -y && sudo apt-get install -y cifs-utils smbclient
 
 echo Check remote host availability
 ping -c 4 "${REMOTE_HOST}"
@@ -26,19 +26,19 @@ ping -c 4 "${REMOTE_HOST}"
 echo Create Samba client credentials
 cat <<EOF | sudo tee "${LOCAL_CFG}"
 # //${REMOTE_HOST}
-username=${REMOTE_UN}
-password=${REMOTE_PASSWD}
+username=${REMOTE_USER_NAME}
+password=${REMOTE_PASSWORD}
 EOF
 # sudo nano "${LOCAL_CFG}"
 
 echo Or use a function
 create_samba_credentials() {
     export REMOTE_HOST="${1}"
-    export REMOTE_UN="${2}"
-    export REMOTE_PASSWD="${3}"
+    export REMOTE_USER_NAME="${2}"
+    export REMOTE_PASSWORD="${3}"
     export LOCAL_CFG="/etc/samba/${REMOTE_HOST}.smbclient"
     
-    printf "# %s\nusername=%s\npassword=%s\n" "${REMOTE_HOST}" "${REMOTE_UN}" "${REMOTE_PASSWD}" | sudo tee "${LOCAL_CFG}" 
+    printf "# %s\nusername=%s\npassword=%s\n" "${REMOTE_HOST}" "${REMOTE_USER_NAME}" "${REMOTE_PASSWORD}" | sudo tee "${LOCAL_CFG}" 
 }
 
 echo Create Samba client mount point
@@ -46,10 +46,10 @@ sudo mkdir -pv "${LOCAL_DIR}"
 sudo chmod -Rv 777 "${LOCAL_DIR}"
 
 echo Set Samba client mount point as persistent
-printf "\n# ${REMOTE_HOST}\n//${FULL_REMOTE_DIR} ${LOCAL_DIR} cifs rw,_netdev,credentials=${LOCAL_CFG},iocharset=utf8,uid=$(id -u),gid=$(id -g) 0 0\n" | sudo tee -a "/etc/fstab"
+printf "\n# ${REMOTE_HOST}\n//${FULL_REMOTE_DIR} ${LOCAL_DIR} cifs auto,_netdev,credentials=${LOCAL_CFG},noperm,iocharset=utf8,uid=0,gid=0,rw,file_mode=0777,dir_mode=0777,x-systemd.automount,x-systemd.idle-timeout=30 0 0\n" | sudo tee -a "/etc/fstab"
 # sudo nano "/etc/fstab"
 
-# Reboot
+echo Reboot
 sudo shutdown -r now
 ```
 
