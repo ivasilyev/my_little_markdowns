@@ -1,26 +1,24 @@
-# Enable `ntp`-based synchronization
+# Deploy Alertmanager
 
-See `linux_ntp.md` for details
-
-# Configure Prometheus
+## Prepare environment
 
 ```shell script
 echo Export variables
 #
-export TOOL_NAME="prometheus"
-export USER_PASSWORD=""
-export TOOL_PORT=9090
+export TOOL_NAME="alertmanager"
 export TOOL_DATA_DIR="/data/${TOOL_NAME}"
-export NODE_EXPORTER_PORT=9100
-export IMG="prom/prometheus:latest"
+export TOOL_PORT=9093
+export TOOL_CLUSTERING_PORT=9094
+export USER_PASSWORD=""
+export IMG="prom/alertmanager:latest"
 #
 export USER_NAME="${TOOL_NAME}-user"
-export NETWORK_NAME="monitoring"
 export TOOL_DIR="/opt/${TOOL_NAME}/"
 export TOOL_CFG="${TOOL_DIR}${TOOL_NAME}.conf"
 export TOOL_WEB_CFG="${TOOL_DIR}${TOOL_NAME}-web.conf"
 export TOOL_SCRIPT="${TOOL_DIR}${TOOL_NAME}.sh"
 export TOOL_SERVICE="/etc/systemd/system/${TOOL_NAME}.service"
+export NETWORK_NAME="monitoring"
 
 echo Create user "${USER_NAME}"
 sudo userdel "${USER_NAME}"
@@ -45,15 +43,16 @@ sudo rm \
     --verbose \
     "${TOOL_DIR}"
 sudo mkdir \
+    --mode 0700 \
     --parent \
     --verbose \
-    --mode 0700 \
     "${TOOL_DIR}" \
     "${TOOL_DATA_DIR}"
+sudo touch "${TOOL_CFG}"
 sudo chown \
     --recursive \
     --verbose \
-    "$(id --user "${USER_NAME}"):$(id --group "${USER_NAME}")" \
+    "$(id --user "${USER_NAME}")" \
     "${TOOL_DIR}" \
     "${TOOL_DATA_DIR}"
 
@@ -64,16 +63,57 @@ echo Install htpasswd
 sudo apt-get install -y apache2-utils
 ```
 
+## Inspect Docker image
+
+```shell script
+docker pull "${IMG}"
+docker run \
+    --entrypoint /bin/sh \
+    --env TOOL_CFG="${TOOL_CFG}" \
+    --interactive \
+    --name "${TOOL_NAME}" \
+    --publish "${TOOL_PORT}:${TOOL_PORT}" \
+    --rm \
+    --tty \
+    --user "$(id --user "${USER_NAME}")" \
+    --volume "${TOOL_DIR}:${TOOL_DIR}" \
+    --volume "${TOOL_DATA_DIR}:${TOOL_DATA_DIR}" \
+    "${IMG}"
+
+/bin/alertmanager -h
+```
+
 ## Configure and start tool
 
 ```shell script
 echo Create tool configuration file
-# export TOOL_CFG="${TOOL_CFG}" && rm -f "\${TOOL_CFG}" && sudo nano "${TOOL_CFG}"
 cat <<EOF | sudo tee "${TOOL_CFG}"
 ---
 global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
+  resolve_timeout: 5m
+route:
+  receiver: main
+  group_by:
+  - job
+  routes:
+  - receiver: "null"
+    match:
+      alertname: Watchdog
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 12h
+receivers:
+- name: "null"
+- name: "main"
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal:
+    - "alertname"
+    - "dev"
+    - "instance"
 EOF
 
 # nano "${TOOL_CFG}"
@@ -92,41 +132,42 @@ EOF
 
 
 
-echo Create tool script
+echo Create tool routine script
 cat <<EOF | sudo tee "${TOOL_SCRIPT}"
 #!/usr/bin/env bash
 # bash "${TOOL_SCRIPT}"
-export USER_NAME="${USER_NAME}"
-export TOOL_NAME="${TOOL_NAME}"
-export TOOL_DATA_DIR="${TOOL_DATA_DIR}"
+export NETWORK_NAME="${NETWORK_NAME}"
 export TOOL_CFG="${TOOL_CFG}"
 export TOOL_WEB_CFG="${TOOL_WEB_CFG}"
+export TOOL_CLUSTERING_PORT="${TOOL_CLUSTERING_PORT}"
+export TOOL_DATA_DIR="${TOOL_DATA_DIR}"
+export TOOL_DIR="${TOOL_DIR}"
+export TOOL_NAME="${TOOL_NAME}"
 export TOOL_PORT="${TOOL_PORT}"
-export NETWORK_NAME="${NETWORK_NAME}"
+export USER_NAME="${USER_NAME}"
 
 export IMG="${IMG}"
 docker pull "\${IMG}"
 docker run \\
     --env "TOOL_CFG=\${TOOL_CFG}" \\
-    --env "TOOL_WEB_CFG=\${TOOL_WEB_CFG}" \\
     --env "TOOL_DATA_DIR=\${TOOL_DATA_DIR}" \\
     --env "TOOL_PORT=\${TOOL_PORT}" \\
     --name "\${TOOL_NAME}" \\
     --network "\${NETWORK_NAME}" \\
-    --publish "\${TOOL_PORT}:\${TOOL_PORT}" \\
+    --publish "\${TOOL_CLUSTERING_PORT}:\${TOOL_CLUSTERING_PORT}/tcp" \\
+    --publish "\${TOOL_CLUSTERING_PORT}:\${TOOL_CLUSTERING_PORT}/udp" \\
+    --publish "\${TOOL_PORT}:\${TOOL_PORT}/tcp" \\
+    --publish "\${TOOL_PORT}:\${TOOL_PORT}/udp" \\
     --rm \\
     --user "\$(id --user "\${USER_NAME}")" \\
-    --volume "\${TOOL_CFG}:\${TOOL_CFG}" \\
-    --volume "\${TOOL_WEB_CFG}:\${TOOL_WEB_CFG}" \\
+    --volume "\${TOOL_DIR}:\${TOOL_DIR}" \\
     --volume "\${TOOL_DATA_DIR}:\${TOOL_DATA_DIR}" \\
     "\${IMG}" \\
-        --config.file="\${TOOL_CFG}" \\
-        --web.config.file="\${TOOL_WEB_CFG}" \\
         --log.level=error \\
-        --storage.tsdb.path="\${TOOL_DATA_DIR}" \\
-        --storage.tsdb.retention.time="1h" \\
-        --web.enable-lifecycle \\
-        --web.listen-address="0.0.0.0:\${TOOL_PORT}"
+        --config.file="\${TOOL_CFG}" \\
+        --storage.path="\${TOOL_DATA_DIR}" \\
+        --web.config.file="\${TOOL_WEB_CFG}" \\
+        --web.listen-address=:\${TOOL_PORT}
 EOF
 
 sudo chmod a+x "${TOOL_SCRIPT}"
@@ -163,21 +204,31 @@ echo Activate ${TOOL_NAME} service
 sudo systemctl daemon-reload
 sudo systemctl enable "${TOOL_NAME}.service"
 sudo systemctl restart "${TOOL_NAME}.service"
+sleep 3
 sudo systemctl status "${TOOL_NAME}.service"
 
 
 
 echo Enable access to ${TOOL_PORT}
 sudo ufw allow proto tcp to 0.0.0.0/0 port ${TOOL_PORT} comment "${TOOL_NAME} server listen port"
+sudo ufw allow proto udp to 0.0.0.0/0 port ${TOOL_PORT} comment "${TOOL_NAME} server listen port"
 sudo ufw --force disable
 sudo ufw --force enable
 sudo ufw status verbose
 
 
 
-echo "Check ${TOOL_NAME} service"
-sleep 5
-curl "http://localhost:${TOOL_PORT}/metrics"
+echo Enable access to ${TOOL_CLUSTERING_PORT}
+sudo ufw allow proto tcp to 0.0.0.0/0 port ${TOOL_CLUSTERING_PORT} comment "${TOOL_NAME} server listen port"
+sudo ufw allow proto udp to 0.0.0.0/0 port ${TOOL_CLUSTERING_PORT} comment "${TOOL_NAME} server listen port"
+sudo ufw --force disable
+sudo ufw --force enable
+sudo ufw status verbose
+
+
+
+echo Check ${TOOL_NAME} service
+curl "http://localhost:${TOOL_PORT}"
 sudo lsof -i -P -n | grep "${TOOL_PORT}"
-pgrep ${TOOL_NAME}
+pgrep "${TOOL_NAME}"
 ```

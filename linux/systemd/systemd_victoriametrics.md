@@ -79,7 +79,6 @@ docker run \
 /victoria-metrics-prod -h
 
 
-docker network create "${NETWORK_NAME}"
 export IMG="victoriametrics/vmauth:latest"
 docker pull "${IMG}"
 docker run \

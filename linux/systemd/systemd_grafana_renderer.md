@@ -51,7 +51,7 @@ export TOOL_PORT="${TOOL_PORT}"
 
 export IMG="${IMG}"
 docker pull "\${IMG}"
-# Do not declare but override HTTP_PORT
+# The HTTP_PORT is hardcoded
 docker run \\
     --env "ENABLE_METRICS=true" \\
     --env "HTTP_HOST=0.0.0.0" \\
