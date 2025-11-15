@@ -46,7 +46,8 @@ sudo mkdir -pv "${LOCAL_DIR}"
 sudo chmod -Rv 777 "${LOCAL_DIR}"
 
 echo Set Samba client mount point as persistent
-printf "\n# ${REMOTE_HOST}\n//${FULL_REMOTE_DIR} ${LOCAL_DIR} cifs auto,_netdev,credentials=${LOCAL_CFG},noperm,iocharset=utf8,uid=0,gid=0,rw,file_mode=0777,dir_mode=0777,x-systemd.automount,x-systemd.idle-timeout=30 0 0\n" | sudo tee -a "/etc/fstab"
+# Setting x-systemd.automount,x-systemd.idle-timeout=30 may accidentally disconnect share
+printf "\n# ${REMOTE_HOST}\n//${FULL_REMOTE_DIR} ${LOCAL_DIR} cifs auto,_netdev,credentials=${LOCAL_CFG},noperm,iocharset=utf8,uid=0,gid=0,rw,file_mode=0777,dir_mode=0777 0 0\n" | sudo tee -a "/etc/fstab"
 # sudo nano "/etc/fstab"
 
 echo Reboot
