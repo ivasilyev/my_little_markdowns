@@ -40,10 +40,13 @@ sudo usermod \
 
 echo Create directories
 sudo rm \
-    -rf \
+    --force \
+    --recursive \
+    --verbose \
     "${TOOL_DIR}"
 sudo mkdir \
     --parent \
+    --verbose \
     --mode 0700 \
     "${TOOL_DIR}" \
     "${TOOL_DATA_DIR}"
@@ -53,6 +56,9 @@ sudo chown \
     "$(id --user "${USER_NAME}"):$(id --group "${USER_NAME}")" \
     "${TOOL_DIR}" \
     "${TOOL_DATA_DIR}"
+
+echo Create network
+docker network create --driver=bridge "${TOOL_NETWORK}"
 
 echo Install htpasswd
 sudo apt-get install -y apache2-utils

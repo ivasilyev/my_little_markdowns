@@ -36,19 +36,26 @@ sudo usermod \
 
 echo Create directories
 sudo rm \
-    -rf \
+    --force \
+    --recursive \
+    --verbose \
     "${TOOL_DIR}" \
     "${TOOL_DATA_DIR}"
 sudo mkdir \
     --parent \
+    --verbose \
     --mode 0700 \
     "${TOOL_DIR}" \
     "${TOOL_DATA_DIR}"
 sudo chown \
     --recursive \
+    --verbose \
     "$(id --user "${USER_NAME}")" \
     "${TOOL_DIR}" \
     "${TOOL_DATA_DIR}"
+
+echo Create network
+docker network create --driver=bridge "${TOOL_NETWORK}"
 ```
 
 ## Inspect Docker image
