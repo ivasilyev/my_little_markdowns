@@ -67,6 +67,14 @@ sudo crontab -e
 sudo crontab -l
 ```
 
+# Create bridge network
+
+```shell script
+export NETWORK=""
+docker network remove "${NETWORK}"
+docker network create --driver=bridge "${NETWORK}"
+```
+
 # Uninstall Docker
 
 ```shell script
