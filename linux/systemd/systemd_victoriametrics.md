@@ -181,6 +181,8 @@ sleep 5
 curl "http://localhost:${TOOL_PORT}"
 sudo lsof -i -P -n | grep "${TOOL_PORT}"
 pgrep victoria-metric
+
+echo "Add http://${TOOL_NAME}:${TOOL_PORT} into Grafana as a Prometheus API DataSource"
 ```
 
 # Configure Prometheus
