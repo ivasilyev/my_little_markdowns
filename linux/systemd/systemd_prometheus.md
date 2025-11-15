@@ -1,22 +1,26 @@
-# Deploy VictoriaMetrics
+# Enable `ntp`-based synchronization
 
-## Prepare environment
+See `linux_ntp.md` for details
+
+# Configure Prometheus
 
 ```shell script
 echo Export variables
 #
-export TOOL_NAME="victoriametrics"
+export TOOL_NAME="prometheus"
 export USER_PASSWORD=""
-export TOOL_PORT=8428
+export TOOL_PORT=9090
 export TOOL_DATA_DIR="/data/${TOOL_NAME}"
-export IMG="victoriametrics/victoria-metrics:latest"
+export NODE_EXPORTER_PORT=9100
+export IMG="prom/prometheus:latest"
 #
 export USER_NAME="${TOOL_NAME}-user"
+export NETWORK_NAME="monitoring"
 export TOOL_DIR="/opt/${TOOL_NAME}/"
 export TOOL_CFG="${TOOL_DIR}${TOOL_NAME}.conf"
+export TOOL_WEB_CFG="${TOOL_DIR}${TOOL_NAME}-web.conf"
 export TOOL_SCRIPT="${TOOL_DIR}${TOOL_NAME}.sh"
 export TOOL_SERVICE="/etc/systemd/system/${TOOL_NAME}.service"
-export NETWORK_NAME="monitoring"
 
 echo Create user "${USER_NAME}"
 sudo userdel "${USER_NAME}"
@@ -37,8 +41,7 @@ sudo usermod \
 echo Create directories
 sudo rm \
     -rf \
-    "${TOOL_DIR}" \
-    "${TOOL_DATA_DIR}"
+    "${TOOL_DIR}"
 sudo mkdir \
     --parent \
     --mode 0700 \
@@ -46,82 +49,79 @@ sudo mkdir \
     "${TOOL_DATA_DIR}"
 sudo chown \
     --recursive \
-    "$(id --user "${USER_NAME}")" \
+    --verbose \
+    "$(id --user "${USER_NAME}"):$(id --group "${USER_NAME}")" \
     "${TOOL_DIR}" \
     "${TOOL_DATA_DIR}"
-```
 
-## Inspect Docker image
-
-```shell script
-docker network create "${NETWORK_NAME}"
-docker pull "${IMG}"
-docker run \
-    --entrypoint /bin/sh \
-    --env TOOL_CFG="${TOOL_CFG}" \
-    --interactive \
-    --name "${TOOL_NAME}" \
-    --network "${NETWORK_NAME}" \
-    --publish "${TOOL_PORT}:${TOOL_PORT}" \
-    --rm \
-    --tty \
-    --user "$(id --user "${USER_NAME}")" \
-    --volume "${TOOL_DATA_DIR}:${TOOL_DATA_DIR}" \
-    "${IMG}"
-
-/victoria-metrics-prod -h
-
-
-docker network create "${NETWORK_NAME}"
-export IMG="victoriametrics/vmauth:latest"
-docker pull "${IMG}"
-docker run \
-    --entrypoint /bin/sh \
-    --env TOOL_CFG="${TOOL_CFG}" \
-    --interactive \
-    --name "${TOOL_NAME}" \
-    --network "${NETWORK_NAME}" \
-    --publish "${TOOL_PORT}:${TOOL_PORT}" \
-    --rm \
-    --tty \
-    --user "$(id --user "${USER_NAME}")" \
-    --volume "${TOOL_DATA_DIR}:${TOOL_DATA_DIR}" \
-    "${IMG}"
+echo Install htpasswd
+sudo apt-get install -y apache2-utils
 ```
 
 ## Configure and start tool
 
 ```shell script
+echo Create tool configuration file
+# export TOOL_CFG="${TOOL_CFG}" && rm -f "\${TOOL_CFG}" && sudo nano "${TOOL_CFG}"
+cat <<EOF | sudo tee "${TOOL_CFG}"
+---
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+EOF
+
+# nano "${TOOL_CFG}"
+
+
+
+echo Create tool web configuration file
+cat <<EOF | sudo tee "${TOOL_WEB_CFG}"
+# export TOOL_WEB_CFG="${TOOL_WEB_CFG}" && rm -f "\${TOOL_WEB_CFG}" && sudo nano "${TOOL_WEB_CFG}"
+---
+basic_auth_users:
+    ${USER_NAME}: $(htpasswd -B -C 10 -n -b "${USER_NAME}" "${USER_PASSWORD}" | cut -d ":" -f 2)
+EOF
+
+# nano "${TOOL_WEB_CFG}"
+
+
+
 echo Create tool script
 cat <<EOF | sudo tee "${TOOL_SCRIPT}"
 #!/usr/bin/env bash
 # bash "${TOOL_SCRIPT}"
+export USER_NAME="${USER_NAME}"
 export TOOL_NAME="${TOOL_NAME}"
 export TOOL_DATA_DIR="${TOOL_DATA_DIR}"
 export TOOL_CFG="${TOOL_CFG}"
+export TOOL_WEB_CFG="${TOOL_WEB_CFG}"
 export TOOL_PORT="${TOOL_PORT}"
-export USER_NAME="${USER_NAME}"
 export NETWORK_NAME="${NETWORK_NAME}"
 
 export IMG="${IMG}"
 docker network create "\${NETWORK_NAME}"
 docker pull "\${IMG}"
 docker run \\
-    --env "TOOL_PORT=\${TOOL_PORT}" \\
+    --env "TOOL_CFG=\${TOOL_CFG}" \\
+    --env "TOOL_WEB_CFG=\${TOOL_WEB_CFG}" \\
     --env "TOOL_DATA_DIR=\${TOOL_DATA_DIR}" \\
+    --env "TOOL_PORT=\${TOOL_PORT}" \\
     --name "\${TOOL_NAME}" \\
     --network "\${NETWORK_NAME}" \\
     --publish "\${TOOL_PORT}:\${TOOL_PORT}" \\
     --rm \\
+    --user "\$(id --user "\${USER_NAME}")" \\
+    --volume "\${TOOL_CFG}:\${TOOL_CFG}" \\
+    --volume "\${TOOL_WEB_CFG}:\${TOOL_WEB_CFG}" \\
     --volume "\${TOOL_DATA_DIR}:\${TOOL_DATA_DIR}" \\
-    --user "$(id --user "${USER_NAME}")" \\
     "\${IMG}" \\
-        -httpListenAddr "0.0.0.0:\${TOOL_PORT}" \\
-        -httpAuth.username "${USER_NAME}" \\
-        -httpAuth.password "${USER_PASSWORD}" \\
-        -loggerLevel ERROR \\
-        -retentionPeriod 3y \\
-        -storageDataPath "\${TOOL_DATA_DIR}"      
+        --config.file="\${TOOL_CFG}" \\
+        --web.config.file="\${TOOL_WEB_CFG}" \\
+        --log.level=error \\
+        --storage.tsdb.path="\${TOOL_DATA_DIR}" \\
+        --storage.tsdb.retention.time="1h" \\
+        --web.enable-lifecycle \\
+        --web.listen-address="0.0.0.0:\${TOOL_PORT}"
 EOF
 
 sudo chmod a+x "${TOOL_SCRIPT}"
@@ -172,27 +172,7 @@ sudo ufw status verbose
 
 echo "Check ${TOOL_NAME} service"
 sleep 5
-curl "http://localhost:${TOOL_PORT}"
+curl "http://localhost:${TOOL_PORT}/metrics"
 sudo lsof -i -P -n | grep "${TOOL_PORT}"
-pgrep victoria-metric
-```
-
-# Configure Prometheus
-
-```shell script
-cat <<EOF | sudo tee -a "/opt/prometheus/prometheus.conf"
-remote_write:
-  - url: http://${TOOL_NAME}:${TOOL_PORT}/api/v1/write
-    basic_auth:
-      username: "${USER_NAME}"
-      password: "${USER_PASSWORD}"
-    queue_config:
-      max_samples_per_send: 10000
-      capacity: 20000
-      max_shards: 30
-EOF
-# nano "/opt/prometheus/prometheus.conf"
-
-sudo systemctl restart prometheus.service
-sudo systemctl status prometheus.service
+pgrep ${TOOL_NAME}
 ```
