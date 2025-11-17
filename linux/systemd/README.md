@@ -1,1 +1,1 @@
-This directory describes systemd-based software setup
+The systemd-based software deployments for a single-node performance.
