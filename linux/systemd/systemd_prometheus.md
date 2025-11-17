@@ -64,6 +64,27 @@ echo Install htpasswd
 sudo apt-get install -y apache2-utils
 ```
 
+## Inspect Docker image
+
+```shell script
+docker pull "${IMG}"
+docker run \
+    --entrypoint /bin/sh \
+    --env TOOL_CFG="${TOOL_CFG}" \
+    --env TOOL_DATA_DIR="${TOOL_DATA_DIR}" \
+    --interactive \
+    --name "${TOOL_NAME}" \
+    --network "${TOOL_NETWORK}" \
+    --publish "${TOOL_PORT}:${TOOL_PORT}" \
+    --rm \
+    --tty \
+    --volume "${TOOL_DIR}:${TOOL_DIR}" \
+    --volume "${TOOL_DATA_DIR}:${TOOL_DATA_DIR}" \
+    "${IMG}"
+
+prometheus -h
+```
+
 ## Configure and start tool
 
 ```shell script
