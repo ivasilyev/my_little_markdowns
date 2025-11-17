@@ -127,4 +127,7 @@ sleep 5
 curl "http://localhost:${TOOL_PORT}"
 sudo lsof -i -P -n | grep "${TOOL_PORT}"
 pgrep ${TOOL_NAME}
+
+echo Add to Jackett dashboard the FlareSolverr API URL like:
+echo "http://localhost:${TOOL_PORT}"
 ```
