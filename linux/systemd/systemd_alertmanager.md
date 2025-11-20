@@ -18,7 +18,7 @@ export TOOL_CFG="${TOOL_DIR}${TOOL_NAME}.conf"
 export TOOL_WEB_CFG="${TOOL_DIR}${TOOL_NAME}-web.conf"
 export TOOL_SCRIPT="${TOOL_DIR}${TOOL_NAME}.sh"
 export TOOL_SERVICE="/etc/systemd/system/${TOOL_NAME}.service"
-export NETWORK_NAME="monitoring"
+export TOOL_NETWORK="monitoring"
 
 echo Create user "${USER_NAME}"
 sudo userdel "${USER_NAME}"
@@ -136,7 +136,7 @@ echo Create tool routine script
 cat <<EOF | sudo tee "${TOOL_SCRIPT}"
 #!/usr/bin/env bash
 # bash "${TOOL_SCRIPT}"
-export NETWORK_NAME="${NETWORK_NAME}"
+export TOOL_NETWORK="${TOOL_NETWORK}"
 export TOOL_CFG="${TOOL_CFG}"
 export TOOL_WEB_CFG="${TOOL_WEB_CFG}"
 export TOOL_CLUSTERING_PORT="${TOOL_CLUSTERING_PORT}"
@@ -153,7 +153,7 @@ docker run \\
     --env "TOOL_DATA_DIR=\${TOOL_DATA_DIR}" \\
     --env "TOOL_PORT=\${TOOL_PORT}" \\
     --name "\${TOOL_NAME}" \\
-    --network "\${NETWORK_NAME}" \\
+    --network "\${TOOL_NETWORK}" \\
     --publish "\${TOOL_CLUSTERING_PORT}:\${TOOL_CLUSTERING_PORT}/tcp" \\
     --publish "\${TOOL_CLUSTERING_PORT}:\${TOOL_CLUSTERING_PORT}/udp" \\
     --publish "\${TOOL_PORT}:\${TOOL_PORT}/tcp" \\
