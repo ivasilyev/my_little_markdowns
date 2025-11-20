@@ -16,7 +16,7 @@ export TOOL_DIR="/opt/${TOOL_NAME}/"
 export TOOL_CFG="${TOOL_DIR}${TOOL_NAME}.conf"
 export TOOL_SCRIPT="${TOOL_DIR}${TOOL_NAME}.sh"
 export TOOL_SERVICE="/etc/systemd/system/${TOOL_NAME}.service"
-export NETWORK_NAME="monitoring"
+export TOOL_NETWORK="monitoring"
 
 echo Create user "${USER_NAME}"
 sudo userdel "${USER_NAME}"
@@ -61,14 +61,13 @@ docker network create --driver=bridge "${TOOL_NETWORK}"
 ## Inspect Docker image
 
 ```shell script
-docker network create "${NETWORK_NAME}"
 docker pull "${IMG}"
 docker run \
     --entrypoint /bin/sh \
     --env TOOL_CFG="${TOOL_CFG}" \
     --interactive \
     --name "${TOOL_NAME}" \
-    --network "${NETWORK_NAME}" \
+    --network "${TOOL_NETWORK}" \
     --publish "${TOOL_PORT}:${TOOL_PORT}" \
     --rm \
     --tty \
@@ -86,7 +85,7 @@ docker run \
     --env TOOL_CFG="${TOOL_CFG}" \
     --interactive \
     --name "${TOOL_NAME}" \
-    --network "${NETWORK_NAME}" \
+    --network "${TOOL_NETWORK}" \
     --publish "${TOOL_PORT}:${TOOL_PORT}" \
     --rm \
     --tty \
@@ -107,16 +106,16 @@ export TOOL_DATA_DIR="${TOOL_DATA_DIR}"
 export TOOL_CFG="${TOOL_CFG}"
 export TOOL_PORT="${TOOL_PORT}"
 export USER_NAME="${USER_NAME}"
-export NETWORK_NAME="${NETWORK_NAME}"
+export TOOL_NETWORK="${TOOL_NETWORK}"
 
 export IMG="${IMG}"
-docker network create "\${NETWORK_NAME}"
+docker network create "\${TOOL_NETWORK}"
 docker pull "\${IMG}"
 docker run \\
     --env "TOOL_PORT=\${TOOL_PORT}" \\
     --env "TOOL_DATA_DIR=\${TOOL_DATA_DIR}" \\
     --name "\${TOOL_NAME}" \\
-    --network "\${NETWORK_NAME}" \\
+    --network "\${TOOL_NETWORK}" \\
     --publish "\${TOOL_PORT}:\${TOOL_PORT}" \\
     --rm \\
     --volume "\${TOOL_DATA_DIR}:\${TOOL_DATA_DIR}" \\
