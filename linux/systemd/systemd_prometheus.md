@@ -15,7 +15,7 @@ export NODE_EXPORTER_PORT=9100
 export IMG="prom/prometheus:latest"
 #
 export USER_NAME="${TOOL_NAME}-user"
-export NETWORK_NAME="monitoring"
+export TOOL_NETWORK="monitoring"
 export TOOL_DIR="/opt/${TOOL_NAME}/"
 export TOOL_CFG="${TOOL_DIR}${TOOL_NAME}.conf"
 export TOOL_WEB_CFG="${TOOL_DIR}${TOOL_NAME}-web.conf"
@@ -123,7 +123,7 @@ export TOOL_DATA_DIR="${TOOL_DATA_DIR}"
 export TOOL_CFG="${TOOL_CFG}"
 export TOOL_WEB_CFG="${TOOL_WEB_CFG}"
 export TOOL_PORT="${TOOL_PORT}"
-export NETWORK_NAME="${NETWORK_NAME}"
+export TOOL_NETWORK="${TOOL_NETWORK}"
 
 export IMG="${IMG}"
 docker pull "\${IMG}"
@@ -133,7 +133,7 @@ docker run \\
     --env "TOOL_DATA_DIR=\${TOOL_DATA_DIR}" \\
     --env "TOOL_PORT=\${TOOL_PORT}" \\
     --name "\${TOOL_NAME}" \\
-    --network "\${NETWORK_NAME}" \\
+    --network "\${TOOL_NETWORK}" \\
     --publish "\${TOOL_PORT}:\${TOOL_PORT}" \\
     --rm \\
     --user "\$(id --user "\${USER_NAME}")" \\
