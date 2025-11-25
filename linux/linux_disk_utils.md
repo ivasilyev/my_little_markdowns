@@ -166,6 +166,16 @@ sudo nano /etc/fstab
 uuid=<uuid> / ext4 defaults 0 0
 ```
 
+## System cleanup
+
+```shell script
+sudo journalctl --vacuum-time=3d && \
+sudo apt-get autoremove -y && \
+sudo apt-get clean && \
+sudo deborphan | xargs sudo apt-get -y remove --purge && \
+sudo localepurge
+```
+
 ## Clone a disk
 
 ### Clone a disk as-is into the disk of the same (or larger) size
