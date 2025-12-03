@@ -33,3 +33,9 @@ reg delete HKEY_CURRENT_USER\Environment /v Test1 /f
 ```shell script
 reg query HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\SchedulingAgent /v OldName
 ```
+
+### Enable legacy RDP connections (insecure)
+
+```shell script
+REG ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\CredSSP\Parameters /v AllowEncryptionOracle /t REG_DWORD /d 2 
+```
