@@ -195,9 +195,18 @@ sudo dd \
 ### Create disk image
 
 ```shell script
-sudo dd \
-    if=/dev/sdb \
-    of=/tmp/raw.img \
+export DEV_LETTER="b"
+export IMG_FILE="/tmp/my_drive.img"
+# sudo -i
+
+mkdir \
+    --parent \
+    --verbose \
+    "$(dirname "${IMG_FILE}")"
+
+dd \
+    if="/dev/sd${DEV_LETTER}" \
+    of="${IMG_FILE}" \
     conv=noerror,sync \
     status=progress \
     2>&1
