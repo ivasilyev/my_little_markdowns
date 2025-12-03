@@ -1,6 +1,6 @@
 # Short reference about conversion into VMware VM from a virtual or physical  machine 
 
-Use Cygwin or Git Bash.
+Use **Cygwin** or **Git Bash**.
 
 ## From an entire disk containing physical machine
 
@@ -12,6 +12,8 @@ Use Cygwin or Git Bash.
 # For Windows use Cygwin
 
 ls -la "/dev/"
+
+for i in /dev/s* ; do printf "${i}\t$(cygpath -w "${i}")\n" ; done
 ```
 
 - Dump the raw disk image (e.g. `disk.img`) using the `dd` command from `linux disk_utils`.
@@ -65,21 +67,32 @@ yet more fast and works for almost all cases of importing Linux VMs.
 ### Create VMDK file
 
 ```shell script
+echo "Export variables"
+#
+export DEV_LETTER="b"
+export VM_BASENAME="my_drive"
+#
+# It is recommended to use different disks during the conversion for an optimal I/O
+export IMG_FILE="D:/${VM_BASENAME}/${VM_BASENAME}.img"
+export VMDK_MONO_FILE="E:/${VM_BASENAME}/${VM_BASENAME}.vmdk"
+export VMDK_SPLIT_FILE="D:/${VM_BASENAME}/${VM_BASENAME}.vmdk"
+
 echo "Convert RAW to VMDK"
 "${PROGRAMFILES}/Oracle/VirtualBox/VBoxManage.exe" \
     convertfromraw \
-    "disk.img" \
-    "disk.vmdk" \
+    "${IMG_FILE}" \
+    "${VMDK_MONO_FILE}" \
     --format vmdk
 mkdir \
     --parent \
     --verbose \
-    "split"
+    "$(dirname "${VMDK_MONO_FILE}")" \
+    "$(dirname "${VMDK_SPLIT_FILE}")"
 echo "Convert 'monolithic sparse' VMDK into 'split sparse' VMDK"
 "${PROGRAMFILES} (x86)/VMware/VMware Workstation/vmware-vdiskmanager.exe" \
-    -r "disk.vmdk" \
+    -r "${VMDK_MONO_FILE}" \
     -t 1 \
-    "split/disk.vmdk"
+    "${VMDK_SPLIT_FILE}"
 ```
 
 ### Rename VM disk
