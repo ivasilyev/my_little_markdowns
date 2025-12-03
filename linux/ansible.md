@@ -15,7 +15,7 @@ echo Export variables
 
 export TOOL_NAME="ansible"
 export UN="user"
-export UPW="qwerty"
+export UPW=""
 
 export LOCAL_ENV="${HOME}/.bashrc"
 export SYS_ENV="/etc/environment"
@@ -131,7 +131,7 @@ sudo nano "${ANSIBLE_CONFIG}"
 # strategy=free
 strategy=linear
 forks=99
-inventory=/etc/ansible/hosts.yml,
+inventory=['/etc/ansible/hosts.yml']
 remote_user=ansible
 timeout=180
 ```

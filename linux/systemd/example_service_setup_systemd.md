@@ -19,7 +19,7 @@ export IMG=""
 echo Create user "${USER_NAME}"
 sudo userdel "${USER_NAME}"
 sudo useradd \
-    --comment '${TOOL_NAME} service user' \
+    --comment "${TOOL_NAME} service user" \
     --shell "/usr/bin/false" \
     --no-create-home \
     --no-user-group \

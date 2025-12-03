@@ -71,11 +71,11 @@ echo "Export variables"
 #
 export DEV_LETTER="b"
 export VM_BASENAME="my_drive"
-#
-# It is recommended to use different disks during the conversion for an optimal I/O
 export IMG_FILE="D:/${VM_BASENAME}/${VM_BASENAME}.img"
+# It is recommended to use different disks during the conversion for an optimal I/O
 export VMDK_MONO_FILE="E:/${VM_BASENAME}/${VM_BASENAME}.vmdk"
 export VMDK_SPLIT_FILE="D:/${VM_BASENAME}/${VM_BASENAME}.vmdk"
+#
 
 echo "Convert RAW to VMDK"
 "${PROGRAMFILES}/Oracle/VirtualBox/VBoxManage.exe" \
