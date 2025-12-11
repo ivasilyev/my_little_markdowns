@@ -8,13 +8,20 @@ disk.EnableUUID = "TRUE"
 mks.gl.allowBlacklistedDrivers = "TRUE"
 
 # Fix losing signal of the host's keyboard and mouse
-keyboard.allowBothIRQs = FALSE
+keyboard.allowBothIRQs = "FALSE"
 
 # Fix losing signal of the host's mouse
 mks.gamingMouse.policy = "gaming"
 
 # Or fix too fast mouse
 mks.gamingMouse.policy = "absolute"
+
+# Enable hardware video acceleration
+mks.dx11.allowUnsupportedDevices = "TRUE"
+mks.enable3d = "TRUE"
+mks.enableDX12 = "TRUE"
+mks.enableDX12Renderer = "FALSE"
+mks.enableVulkanRenderer = "FALSE"
 ```
 
 # Change NIC type
