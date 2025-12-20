@@ -1,0 +1,17 @@
+# My Obtainium Android apps list
+
+## [AdAway](https://github.com/AdAway/AdAway)
+## [Aniyomi](https://github.com/aniyomiorg/aniyomi)
+## [AppOps](https://github.com/RikkaApps/App-Ops-issue-tracker/releases)
+## [Artemis](https://github.com/ClassicOldSong/moonlight-android)
+## [ByeDPI](https://github.com/dovecoteescapee/ByeDPIAndroid)
+## [CIFS Documents Provider](https://github.com/wa2c/cifs-documents-provider)
+## [F-Droid](https://github.com/f-droid/fdroidclient)
+## [Lampa](https://github.com/lampa-app/LAMPA)
+## [Magisk](https://github.com/topjohnwu/Magisk)
+## [Moonlight Streaming](https://github.com/moonlight-stream/moonlight-android)
+## [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid)
+## [NewPipe](https://github.com/TeamNewPipe/NewPipe)
+## [Obtanium](https://github.com/ImranR98/Obtainium)
+## [Shizuku](https://github.com/RikkaApps/Shizuku)
+## [SplitApkInstaller](https://github.com/Aefyr/SAI)
