@@ -44,8 +44,14 @@ reg delete HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Sha
 
 # Grant full permissions
 
+## For everyone
+
 ```shell script
-icacls The_folder /grant "Everyone:(OI)(CI)F"
-REM OR
-icacls ubuntu-epimetheus /grant "HOSTNAME\username:(OI)(CI)F" /T
+icacls MyFolder /grant "Everyone:(OI)(CI)F"
+```
+
+## For specific user
+
+```shell script
+icacls MyFolder /grant "HOSTNAME\username:(OI)(CI)F" /T
 ```
