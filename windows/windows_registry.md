@@ -39,3 +39,9 @@ reg query HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\SchedulingAgent /v OldName
 ```shell script
 REG ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\CredSSP\Parameters /v AllowEncryptionOracle /t REG_DWORD /d 2 
 ```
+
+### Enable simultaneous WiFi + Ethernet connections
+
+```shell script
+REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\GroupPolicy /v fMinimizeConnections /t REG_DWORD /d 0 
+```
