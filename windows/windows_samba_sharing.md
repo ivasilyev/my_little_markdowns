@@ -44,6 +44,10 @@ reg delete HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Sha
 
 # Grant full permissions
 
+Works only if the current user (with the administrator access) owns the folder. 
+Disable the permission inheritance if required.
+
+
 ## For everyone
 
 ```shell script
