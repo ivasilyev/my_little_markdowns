@@ -3,7 +3,8 @@
 ## Guest
 
 ```shell script
-# Unmount all shares beforehand
+echo "Unmount all shares beforehand"
+sudo umount -a
 
 echo "Install software"
 sudo apt-get update -y && sudo apt-get install -y open-vm-tools
@@ -16,6 +17,9 @@ sync
 rm -f /tmp/wipefile
 echo "Run the shrink operation"
 sudo vmware-toolbox-cmd disk shrinkonly
+
+echo "Reboot"
+sudo shutdown -r now
 ```
 
 ## Host
