@@ -61,3 +61,19 @@ sudo apt-get install -y chromium-browser
 ```shell script
 sudo apt-get install -y thunderbird
 ```
+
+# Other
+
+## Disable Firefox session restore
+
+- Check Startup Settings: 
+  - Go to Firefox Settings (three-bar menu)
+  - General
+  - Startup
+  - `Restore previous session` is unchecked
+  - `When Firefox starts` is set to "Show your home page" or "Show a blank page"
+- Check `about:config`:
+  - Type `about:config` in the address bar
+  - Search for `browser.sessionstore.enabled`
+  - Set it to `false` to disable session restore entirely
+- Check `about:addons` for any tab management extensions that might be overriding settings. 
