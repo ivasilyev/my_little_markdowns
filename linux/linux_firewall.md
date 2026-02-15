@@ -47,10 +47,15 @@ sudo sed \
 
 sudo nano /etc/ufw/sysctl.conf
 ```
+
 ```text
 net.ipv4.ip_forward=1
 net/ipv6/conf/default/forwarding=1
 net/ipv6/conf/all/forwarding=1
+```
+
+```shell script
+sudo sysctl -p
 ```
 
 ### Add NAT to the UFW configuration 
