@@ -13,18 +13,28 @@ mks.gamingMouse.policy = "gaming"
 # Or fix too fast mouse
 mks.gamingMouse.policy = "absolute"
 
-# Enable hardware video acceleration
+# Enable hardware video acceleration in the case of
+# 3D acceleration will be disabled for VMs as DirectX 11.1 is not supported by the host
 mks.dx11.allowUnsupportedDevices = "TRUE"
+mks.dx12.allowUnsupportedDevices = "TRUE"
 mks.enable3d = "TRUE"
-mks.enableDX12 = "TRUE"
+mks.enableDX11 = "FALSE"
+mks.enableDX11Renderer = "FALSE"
+mks.enableDX12 = "FALSE"
 mks.enableDX12Renderer = "FALSE"
 mks.enableGLRenderer = "TRUE"
+mks.enableMTLRenderer = "FALSE"
 mks.enableVulkanRenderer = "FALSE"
+mks.gl.allowUnsupportedDrivers="TRUE"
 mks.gl.allowBlacklistedDrivers = "TRUE"
 mks.gl.checkHostDriver = "FALSE"
 mks.ignoreHostDriverVersion = "TRUE"
 mks.vk.allowUnsupportedDevices = "TRUE"
 mks.vk.forceDevice = "TRUE"
+pref.someLegacyOption = "TRUE"
+svga.autodetect = "FALSE"
+svga.graphicsMemoryKB = "1048576"
+svga.noDrivers = "TRUE"
 ```
 
 # Change NIC type
