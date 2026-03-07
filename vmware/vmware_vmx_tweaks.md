@@ -4,9 +4,6 @@
 # Add disk UUUD support
 disk.EnableUUID = "TRUE"
 
-# Add DirectX support for the VMware up to v17
-mks.gl.allowBlacklistedDrivers = "TRUE"
-
 # Fix losing signal of the host's keyboard and mouse
 keyboard.allowBothIRQs = "FALSE"
 
@@ -21,7 +18,13 @@ mks.dx11.allowUnsupportedDevices = "TRUE"
 mks.enable3d = "TRUE"
 mks.enableDX12 = "TRUE"
 mks.enableDX12Renderer = "FALSE"
+mks.enableGLRenderer = "TRUE"
 mks.enableVulkanRenderer = "FALSE"
+mks.gl.allowBlacklistedDrivers = "TRUE"
+mks.gl.checkHostDriver = "FALSE"
+mks.ignoreHostDriverVersion = "TRUE"
+mks.vk.allowUnsupportedDevices = "TRUE"
+mks.vk.forceDevice = "TRUE"
 ```
 
 # Change NIC type
