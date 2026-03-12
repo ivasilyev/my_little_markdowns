@@ -8,6 +8,7 @@
 ## [ByeDPI](https://github.com/dovecoteescapee/ByeDPIAndroid)
 ## [CIFS Documents Provider](https://github.com/wa2c/cifs-documents-provider)
 ## [F-Droid](https://github.com/f-droid/fdroidclient)
+## [Island](https://github.com/oasisfeng/island)
 ## [KeepScreenOn](https://github.com/elastic-rock/KeepScreenOn)
 ## [Lampa](https://github.com/lampa-app/LAMPA)
 ## [Magisk](https://github.com/topjohnwu/Magisk)
