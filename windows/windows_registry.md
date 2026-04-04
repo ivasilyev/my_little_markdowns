@@ -63,3 +63,17 @@ reg add HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPa
 More workaround:
 - Local access: `\\?\e:\Share\`
 - Network access: `\\?\UNC\HostName\Share\`
+
+
+### Access hidden admin privileges
+
+```shell script
+net user administrator /active:yes
+```
+
+Also disable UAC:
+
+```shell script
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "ValidateAdminCodeSignatures" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "EnableUIADesktopToggle" /t REG_DWORD /d 0 /f
+```
