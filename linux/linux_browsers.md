@@ -53,7 +53,10 @@ sudo apt-get install -y \
 ## Install Chromium instead
 
 ```shell script
-sudo apt-get install -y chromium-browser
+sudo apt-get install \
+    --yes \
+    --fix-missing \
+    chromium-browser 
 ```
 
 ## Install Mozilla Thunderbird
