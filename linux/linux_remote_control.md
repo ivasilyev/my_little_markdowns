@@ -1,6 +1,6 @@
 # Install SSH & allow it via UFW
 
-```
+```shell script
 sudo apt-get update -y && \
 sudo apt-get install -y openssh-server && \
 sudo systemctl enable ssh.service && \
@@ -35,7 +35,7 @@ chmod -v 700 ~/.ssh
 
 # Install RDP
 
-```
+```shell script
 sudo apt-get install \
     --yes \
     avahi-daemon \
@@ -53,7 +53,32 @@ sudo reboot
 
 # Install AnyDesk
 
+## The legacy version (recommended)
+
+```shell script
+sudo systemctl disable anydesk.service
+sudo systemctl stop anydesk.service
+sudo pkill anydesk
+sudo apt remove \
+    --purge \
+    --yes anydesk
+
+cd "/tmp"
+curl -fsSL \
+    "https://download.anydesk.com/linux/anydesk_6.3.2-1_amd64.deb" \
+    -o "anydesk.deb"
+sudo dpkg -i "anydesk.deb"
+sudo systemctl enable anydesk.service
+sudo systemctl restart anydesk.service
+
+# Comment/remove the anydesj line
+sudo nano /etc/apt/sources.list.d/anydesk-stable.list
+sudo apt-get update
 ```
+
+## The modern version (much slower)
+
+```shell script
 echo Add AnyDesk repository key to Trusted software providers list
 sudo wget -qO - https://keys.anydesk.com/repos/DEB-GPG-KEY | sudo apt-key add -
 
