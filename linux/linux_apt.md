@@ -15,3 +15,11 @@ sudo apt-get \
     -o Acquire::https::Proxy="socks5h://${PROXY_URL_STRING}" \
     update
 ```
+
+## Remove package
+
+```shell script
+sudo apt remove \
+    --purge \
+    --yes package
+```
