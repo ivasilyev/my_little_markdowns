@@ -53,6 +53,21 @@ sudo reboot
 
 # Install AnyDesk
 
+## Manage dependencies
+
+```shell script
+cd "/tmp"
+echo Install AnyDesk
+sudo apt-get install \
+    --fix-broken \
+    --yes \
+    libgtkglext1 \
+    libpango-1.0-0
+
+wget http://ftp.us.debian.org/debian/pool/main/p/pangox-compat/libpangox-1.0-0_0.0.2-5.1_amd64.deb
+sudo dpkg -i libpangox-1.0-0_0.0.2-5.1_amd64.deb
+```
+
 ## The legacy version (recommended)
 
 ```shell script
@@ -64,14 +79,18 @@ sudo apt remove \
     --yes anydesk
 
 cd "/tmp"
+# export URL="https://download.anydesk.com/linux/anydesk_6.3.2-1_amd64.deb"
+export URL="https://arquivos.blogdainformatica.com.br/redes-e-internet/anydesk/anydesk_5.1.2-1_amd64.deb"
 curl -fsSL \
-    "https://download.anydesk.com/linux/anydesk_6.3.2-1_amd64.deb" \
+    "${URL}" \
     -o "anydesk.deb"
-sudo dpkg -i "anydesk.deb"
+sudo dpkg \
+    --ignore-depends=libpango1.0-0 \
+    --install "anydesk.deb"
 sudo systemctl enable anydesk.service
 sudo systemctl restart anydesk.service
 
-# Comment/remove the anydesj line
+# Comment/remove the anydesk line
 sudo nano /etc/apt/sources.list.d/anydesk-stable.list
 sudo apt-get update
 ```
@@ -90,7 +109,10 @@ echo Update APT cache
 sudo apt-get update -y
 
 echo Install AnyDesk
-sudo apt-get install --fix-broken -y libgtkglext1 anydesk
+sudo apt-get install \
+    --fix-broken \
+    --yes \
+    anydesk
 
 echo Start AnyDesk
 sudo systemctl enable anydesk

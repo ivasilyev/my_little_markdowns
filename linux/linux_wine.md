@@ -1,6 +1,6 @@
 # Linux Wine setup
 
-```
+```shell script
 echo Install Wine
 sudo dpkg --add-architecture i386 && \
 sudo apt-get update -y && \
