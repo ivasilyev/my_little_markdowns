@@ -65,6 +65,17 @@ sudo apt-get install \
 sudo apt-get install -y thunderbird
 ```
 
+## Install SeaMonkey
+
+```shell script
+cd /tmp
+curl \
+    -fsSL "https://archive.seamonkey-project.org/releases/2.53.23/linux-x86_64/en-US/seamonkey-2.53.23.en-US.linux-x86_64.tar.bz2" \
+| sudo tar -xvjf - -C /opt/
+sudo chown -Rv "$(whoami)" "/opt/seamonkey"
+sudo chmod -Rv 0755 "/opt/seamonkey"
+```
+
 # Other
 
 ## Disable Firefox session restore
