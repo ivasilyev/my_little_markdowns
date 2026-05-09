@@ -84,9 +84,20 @@ export URL="https://arquivos.blogdainformatica.com.br/redes-e-internet/anydesk/a
 curl -fsSL \
     "${URL}" \
     -o "anydesk.deb"
+
+# Fix the dependency by directly manifest edit
+sudo dpkg-deb -R "anydesk.deb" "anydesk_deb"
+sudo sed -iv 's/libpango1.0-0/libpango-1.0-0/g' "anydesk_deb/DEBIAN/control"
+sudo chmod -Rv 0775 "anydesk_deb"
+sudo dpkg-deb -b "anydesk_deb" "anydesk-repack.deb"
+sudo dpkg -i "anydesk-repack.deb"
+
+# Or ignore it (until the next apt install)
 sudo dpkg \
     --ignore-depends=libpango1.0-0 \
     --install "anydesk.deb"
+
+# Enable AnyDesk
 sudo systemctl enable anydesk.service
 sudo systemctl restart anydesk.service
 
