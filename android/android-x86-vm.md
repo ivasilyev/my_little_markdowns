@@ -32,7 +32,7 @@ has_sensors = true
 
 ```shell script
 su
-wm size 800x1200
+wm size 1280x1024
 wm density 240
 wm overscan reset
 ```
