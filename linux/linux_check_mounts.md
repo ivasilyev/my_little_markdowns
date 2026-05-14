@@ -18,7 +18,7 @@ cat <<EOF | sudo tee "${TOOL_SCRIPT}"
 #!/bin/bash
 
 # Ensure the script runs with root privileges
-if [ "$EUID" -ne 0 ]; then
+if [ "\$EUID" -ne 0 ]; then
     echo "Error: This script must be run as root (sudo)." >&2
     exit 1
 fi
@@ -30,11 +30,11 @@ TARGET_FILES=(
 
 
 # Loop through and check each file
-for FILE in "${TARGET_FILES[@]}"
+for FILE in "\${TARGET_FILES[@]}"
     do
-    if [ ! -f "${FILE}" ]; then
-        echo "Critical file missing: ${FILE}. Rebooting in 30 seconds..."
-        /sbin/shutdown -r +1 "Missing critical mount point verified by ${FILE}. Rebooting in 30 seconds." &
+    if [ ! -f "\${FILE}" ]; then
+        echo "Critical file missing: \${FILE}. Rebooting in 30 seconds..."
+        /sbin/shutdown -r +1 "Missing critical mount point verified by \${FILE}. Rebooting in 30 seconds." &
         sleep 30
         exit 0
     fi
