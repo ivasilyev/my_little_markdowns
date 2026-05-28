@@ -61,11 +61,20 @@ echo Install AnyDesk
 sudo apt-get install \
     --fix-broken \
     --yes \
+    libgtk2.0-0 \
     libgtkglext1 \
     libpango-1.0-0
 
+sudo apt --fix-broken install --yes
+
+# If the fetching failed
+
+wget http://ftp.de.debian.org/debian/pool/main/g/gtkglext/libgtkglext1_1.2.0-11_amd64.deb
 wget http://ftp.us.debian.org/debian/pool/main/p/pangox-compat/libpangox-1.0-0_0.0.2-5.1_amd64.deb
-sudo dpkg -i libpangox-1.0-0_0.0.2-5.1_amd64.deb
+
+sudo dpkg -i \
+    libgtkglext1_1.2.0-11_amd64.deb \
+    libpangox-1.0-0_0.0.2-5.1_amd64.deb
 ```
 
 ## The legacy version (recommended)
