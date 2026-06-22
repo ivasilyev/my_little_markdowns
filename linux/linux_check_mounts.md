@@ -3,7 +3,7 @@
 ```shell script
 # Create control files first (assuming that /data and was already mounted)
 TARGET_FILES=(
-    "/data/MOUNT_READY"
+    "/data/.mount_ready"
 )
 for FILE in "${TARGET_FILES[@]}"
     do
