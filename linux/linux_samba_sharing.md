@@ -17,8 +17,8 @@ export LOCAL_CFG="/etc/samba/${REMOTE_HOST}.smbclient"
 clear
 unset HISTFILE
 
-echo Install software
-sudo apt-get update -y && sudo apt-get install -y cifs-utils smbclient
+# echo Install software
+# sudo apt-get update -y && sudo apt-get install -y cifs-utils smbclient
 
 echo Check remote host availability
 ping -c 4 "${REMOTE_HOST}"
@@ -48,7 +48,8 @@ sudo chmod -Rv 777 "${LOCAL_DIR}"
 echo Set Samba client mount point as persistent
 # Setting x-systemd.automount,x-systemd.idle-timeout=30 may accidentally disconnect share
 # Setting non-root GID/PID is considered more secure yet may also cause permission errors
-printf "\n# ${REMOTE_HOST}\n//${FULL_REMOTE_DIR}	${LOCAL_DIR}	cifs	auto,_netdev,credentials=${LOCAL_CFG},noperm,iocharset=utf8,uid=0,gid=0,rw,file_mode=0777,dir_mode=0777	0	0\n" | sudo tee -a "/etc/fstab"
+printf "\n# ${REMOTE_HOST}\n//${FULL_REMOTE_DIR} ${LOCAL_DIR} cifs auto,_netdev,credentials=${LOCAL_CFG},noperm,iocharset=utf8,uid=0,gid=0,rw,file_mode=0777,dir_mode=0777 0 0\n" \
+| sudo tee -a "/etc/fstab"
 # sudo nano "/etc/fstab"
 
 echo Reboot
@@ -122,6 +123,8 @@ echo "${UN}:${PASSWD}" | chpasswd
 
 echo Add Samba password for user with read-only permissions
 echo -ne "${PASSWD}\n${PASSWD}\n" | smbpasswd -a -s "${UN}"
+
+# Or add ed explicitly via sudo smbpasswd -a user
 
 echo "(Optional) Add Samba password for user with read-write permissions"
 sudo smbpasswd -a "$(whoami)"
