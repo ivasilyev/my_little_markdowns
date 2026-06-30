@@ -195,9 +195,9 @@ sudo dd \
 ### Create disk image
 
 ```shell script
+# Root
 export DEV_LETTER="b"
 export IMG_FILE="/tmp/my_drive.img"
-# sudo -i
 
 mkdir \
     --parent \
@@ -223,4 +223,19 @@ sudo losetup \
 
 sudo mount /dev/loop0p1 /mnt
 ls /mnt
+```
+
+### Flash the disk image
+
+```shell script
+# Root
+export DEV_LETTER="b"
+export IMG_FILE="/tmp/my_drive.img"
+
+dd \
+    if="${IMG_FILE}" \
+    of="/dev/sd${DEV_LETTER}" \
+    conv=noerror,sync \
+    status=progress \
+    2>&1
 ```
