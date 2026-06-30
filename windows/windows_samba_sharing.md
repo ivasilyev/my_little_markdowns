@@ -30,14 +30,21 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\S
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v AllowInsecureGuestAuth /t REG_DWORD /d 1 /f
 net stop LanmanWorkstation /y
 net start LanmanWorkstation /y
+```
 
-net use * \\host\Share
+# Map network drive
+
+```shell script
+net use * /delete /yes
+
+net use Z: /delete /yes
+
+net use Z: \\host\Share\path\to\directory /persistent:yes
 ```
 
 # Clear cached passwords
 
 ```shell script
-net use * /d
 klist purge
 reg delete HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Shares /f
 ```
