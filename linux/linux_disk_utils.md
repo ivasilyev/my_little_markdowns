@@ -239,3 +239,11 @@ dd \
     status=progress \
     2>&1
 ```
+
+### Wipe disk
+
+```shell script
+export DEV_LETTER="b"
+
+dd if=/dev/zero of="/dev/sd${DEV_LETTER}"
+```
