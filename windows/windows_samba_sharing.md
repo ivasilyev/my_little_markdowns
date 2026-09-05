@@ -66,3 +66,13 @@ icacls MyFolder /grant "Everyone:(OI)(CI)F"
 ```shell script
 icacls MyFolder /grant "HOSTNAME\username:(OI)(CI)F" /T
 ```
+
+# Disable Samba share account lock (isolate your server first!)
+
+```shell script
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteAccess\Parameters\AccountLockout" /v "MaxDenials" /t REG_DWORD /d 0 /f
+
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AccountLockoutThreshold" /t REG_DWORD /d 0 /f
+
+net accounts /lockoutthreshold:0
+```

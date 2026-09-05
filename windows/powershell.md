@@ -44,11 +44,11 @@ Add-MpPreference -ExclusionPath "C:\program_dir"
 $TaskName = '<task_name>'; $TaskXml = [xml](Get-Content '<task_file.xml>'); Register-ScheduledTask -TaskName $TaskName -Xml $TaskXml.OuterXml; Get-ScheduledTask -TaskName $TaskName
 ```
 
-## View 100 latest files recursively
+## View 500 latest files recursively
 
 ```shell script
 Get-ChildItem -Path "${pwd}" -Recurse -File `
 | Sort-Object LastWriteTime -Descending `
-| Select-Object -First 100 `
+| Select-Object -First 500 `
 | Select-Object FullName, LastWriteTime
 ```

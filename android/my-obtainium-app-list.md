@@ -6,6 +6,7 @@
 ## [Artemis](https://github.com/ClassicOldSong/moonlight-android)
 ## [Busybox](https://github.com/meefik/busybox)
 ## [ByeDPI](https://github.com/dovecoteescapee/ByeDPIAndroid)
+## [ByeByeDPI](https://github.com/romanvht/ByeByeDPI/)
 ## [CIFS Documents Provider](https://github.com/wa2c/cifs-documents-provider)
 ## [F-Droid](https://github.com/f-droid/fdroidclient)
 ## [Happ](https://github.com/Happ-proxy/happ-android)
