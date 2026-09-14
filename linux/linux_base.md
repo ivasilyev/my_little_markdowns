@@ -31,3 +31,18 @@ sudo apt-get install \
 
 watch sensors
 ```
+
+## Change host name
+
+```shell script
+export HOSTNAME="nanokvm-5"
+cat << EOF | tee /etc/fstab
+127.0.0.1 localhost
+127.0.1.1 ${HOSTNAME}
+EOF
+cat << EOF | tee 
+${HOSTNAME}
+EOF
+
+shutdown -r now
+```
