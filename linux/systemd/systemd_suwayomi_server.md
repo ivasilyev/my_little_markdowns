@@ -161,6 +161,27 @@ export SERVER_URL="${1}"
 export AUTH_FLAGS="${2}"
 export GRAPHQL_URL="${SERVER_URL}/api/graphql"
 
+echo "Get downloads"
+DOWNLOADS_JSON="$(
+    curl -s -X POST \
+        -H "Content-Type: application/json" \
+        -d '{"operationName":"GET_DOWNLOAD_STATUS","variables":{},"query":"fragment DOWNLOAD_TYPE_FIELDS on DownloadType { chapter { id name sourceOrder isDownloaded __typename } manga { id title downloadCount __typename } progress state tries __typename } fragment DOWNLOAD_STATUS_FIELDS on DownloadStatus { state queue { ...DOWNLOAD_TYPE_FIELDS __typename } __typename } query GET_DOWNLOAD_STATUS { downloadStatus { ...DOWNLOAD_STATUS_FIELDS __typename } }"}' \
+        "${GRAPHQL_URL}" \
+        2> /dev/null
+)"
+DOWNLOADS_IDS="$(
+    echo "${DOWNLOADS_JSON}" \
+    | jq -r '[.data.downloadStatus.queue.[].chapter.id | tostring] | join(",")'
+)"
+sleep 1
+
+echo "Restart downloads"
+curl -s -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"operationName":"ENQUEUE_CHAPTER_DOWNLOADS","variables":{"input":{"ids":['"${DOWNLOADS_IDS}"']}},"query":"fragment DOWNLOAD_TYPE_FIELDS on DownloadType { chapter { id name sourceOrder isDownloaded __typename } manga { id title downloadCount __typename } progress state tries __typename } fragment DOWNLOAD_STATUS_FIELDS on DownloadStatus { state queue { ...DOWNLOAD_TYPE_FIELDS __typename } __typename } mutation ENQUEUE_CHAPTER_DOWNLOADS($input: EnqueueChapterDownloadsInput!) { enqueueChapterDownloads(input: $input) { downloadStatus { ...DOWNLOAD_STATUS_FIELDS __typename } __typename } }"}' \
+    "${GRAPHQL_URL}" \
+    > /dev/null 2>&1
+
 # echo "Cancel stalled downloads"
 # curl -s -X POST \
 #     -H "Content-Type: application/json" \
@@ -170,12 +191,13 @@ export GRAPHQL_URL="${SERVER_URL}/api/graphql"
 
 echo "Get total entries count"
 TOTAL_MANGA_ENTRIES_COUNT="$(
-    curl -X POST \
+    curl -s -X POST \
         -H "Content-Type: application/json" \
         -d '{"operationName": "GET_LIBRARY_MANGA_COUNT", "variables": {}, "query": "query GET_LIBRARY_MANGA_COUNT {mangas(condition: {inLibrary: true}) {totalCount __typename}}"}' \
         "${GRAPHQL_URL}" \
     | jq '.data.mangas.totalCount'
 )"
+sleep 1
 
 echo "Update ${TOTAL_MANGA_ENTRIES_COUNT} entries"
 for ENTRY_ID in $(seq ${TOTAL_MANGA_ENTRIES_COUNT})
