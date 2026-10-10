@@ -77,14 +77,11 @@ docker run \
 
 ```shell script
 echo Create ${TOOL_NAME} configuration files
+echo "${USER_PASSWORD}" | tee "${TOOL_PASSWD_FILE}"
+# nano "${TOOL_PASSWD_FILE}"
+
 cat <<EOF | tee "${TOOL_CFG_FILE}"
 {
-  "accsdb": {
-    "enable": true,
-    "users": [
-      { "id": "user", "expires": "2199-12-31" }
-    ]
-  },
   "listen": {
     "version": true,
     "ip": "0.0.0.0",
@@ -128,26 +125,6 @@ cat <<EOF | tee "${TOOL_CFG_FILE}"
 EOF
 # nano "${TOOL_CFG_FILE}"
 
-echo "${USER_PASSWORD}" | tee "${TOOL_PASSWD_FILE}"
-# nano "${TOOL_PASSWD_FILE}"
-
-cat <<EOF | tee "${TOOL_DIR}users.json"
-[
-  {
-    "id": 1,
-    "uid": "password",
-    "name": "LocalUser",
-    "role": "user",
-    "account": {
-      "expired": "2199-12-31"
-    },
-    "accs": {
-      "group": "user"
-    }
-  }
-]
-EOF
-
 cat <<EOF | tee "${TOOL_DIR}admin_panel_manifest.json"
 {
   "enable": true,
@@ -182,7 +159,6 @@ docker run \\
     --publish "\${TOOL_PORT}:\${TOOL_PORT}/udp" \\
     --rm \\
     --volume "\${TOOL_CFG_FILE}:/lampac/init.conf" \\
-    --volume "\${TOOL_DIR}users.json:/lampac/users.json" \\
     --volume "\${TOOL_PASSWD_FILE}:/lampac/passwd" \\
     --volume "\${TOOL_DIR}admin_panel_manifest.json:/lampac/module/AdminPanel/manifest.json" \\
     --volume "\${TOOL_DIR}cache:/lampac/cache" \\
