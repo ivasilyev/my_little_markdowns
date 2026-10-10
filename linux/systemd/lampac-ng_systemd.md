@@ -76,9 +76,15 @@ docker run \
 ## Configure and start tool
 
 ```shell script
-echo Create ${TOOL_NAME} configuration file
-cat <<EOF | sudo tee "${TOOL_CFG_FILE}"
+echo Create ${TOOL_NAME} configuration files
+cat <<EOF | tee "${TOOL_CFG_FILE}"
 {
+  "accsdb": {
+    "enable": true,
+    "users": [
+      { "id": "user", "expires": "2199-12-31" }
+    ]
+  },
   "listen": {
     "version": true,
     "ip": "0.0.0.0",
@@ -90,10 +96,8 @@ cat <<EOF | sudo tee "${TOOL_CFG_FILE}"
     "SkipModules": [
       "Catalog",
       "DLNA",
-      "JacRed",
       "Sync",
       "TimeCode",
-      "TorrServer",
       "Tracks",
       "Transcoding",
       "WebLog"
@@ -127,7 +131,34 @@ EOF
 echo "${USER_PASSWORD}" | tee "${TOOL_PASSWD_FILE}"
 # nano "${TOOL_PASSWD_FILE}"
 
+cat <<EOF | tee "${TOOL_DIR}users.json"
+[
+  {
+    "id": 1,
+    "uid": "password",
+    "name": "LocalUser",
+    "role": "user",
+    "account": {
+      "expired": "2199-12-31"
+    },
+    "accs": {
+      "group": "user"
+    }
+  }
+]
+EOF
 
+cat <<EOF | tee "${TOOL_DIR}admin_panel_manifest.json"
+{
+  "enable": true,
+  "dynamic": true,
+  "tree": [
+    "AdminPanelController.cs",
+    "ConfigSectionGroups.cs",
+    "ModInit.cs"
+  ]
+}
+EOF
 
 echo Create ${TOOL_NAME} routine script
 cat <<EOF | sudo tee "${TOOL_SCRIPT}"
@@ -151,7 +182,9 @@ docker run \\
     --publish "\${TOOL_PORT}:\${TOOL_PORT}/udp" \\
     --rm \\
     --volume "\${TOOL_CFG_FILE}:/lampac/init.conf" \\
+    --volume "\${TOOL_DIR}users.json:/lampac/users.json" \\
     --volume "\${TOOL_PASSWD_FILE}:/lampac/passwd" \\
+    --volume "\${TOOL_DIR}admin_panel_manifest.json:/lampac/module/AdminPanel/manifest.json" \\
     --volume "\${TOOL_DIR}cache:/lampac/cache" \\
     --volume "\${TOOL_DIR}database:/lampac/database" \\
     --volume "\${TOOL_DIR}mods:/lampac/mods" \\
@@ -213,4 +246,5 @@ sudo lsof -i -P -n | grep "${TOOL_PORT}"
 pgrep "${TOOL_NAME}"
 curl "http://localhost:${TOOL_PORT}/version?type=hash"
 curl "http://localhost:${TOOL_PORT}/online.js"
+curl "http://localhost:${TOOL_PORT}/adminpanel/auth"
 ```
