@@ -89,10 +89,12 @@ cat <<EOF | tee "${TOOL_CFG_FILE}"
     "scheme": "http",
     "localhost": "127.0.0.1"
   },
+  "lowMemoryMode": false,
   "BaseModule": {
     "SkipModules": [
       "Catalog",
       "DLNA",
+      "sisi",
       "Sync",
       "TimeCode",
       "Tracks",
@@ -114,12 +116,7 @@ cat <<EOF | tee "${TOOL_CFG_FILE}"
     "btn_priority_forced": true
   },
   "sisi": {
-    "lgbt": false,
-    "spider": false,
-    "NextHUB": true,
-    "history": {
-      "enable": false
-    }
+    "enable": false
   }
 }
 EOF
