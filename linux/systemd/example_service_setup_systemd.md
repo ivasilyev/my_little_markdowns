@@ -48,7 +48,7 @@ sudo touch "${TOOL_CFG}"
 sudo chown \
     --recursive \
     --verbose \
-    "$(id --user "${USER_NAME}")" \
+    "$(id --user "${USER_NAME}"):$(id --group "${USER_NAME}")" \
     "${TOOL_DIR}" \
     "${TOOL_DATA_DIR}"
 ```
