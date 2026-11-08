@@ -20,5 +20,8 @@
 ## [NewPipe](https://github.com/TeamNewPipe/NewPipe)
 ## [Obtanium](https://github.com/ImranR98/Obtainium)
 ## [Shizuku](https://github.com/RikkaApps/Shizuku)
+## [Simple Calendar](https://github.com/SimpleMobileTools/Simple-Calendar)
+## [Simple File Manager](https://github.com/SimpleMobileTools/Simple-File-Manager)
+## [Simple Gallery](https://github.com/SimpleMobileTools/Simple-Gallery)
 ## [SplitApkInstaller](https://github.com/Aefyr/SAI)
 ## [Termux](https://github.com/termux/termux-app)
